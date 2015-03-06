@@ -1,0 +1,73 @@
+/******************************************************************************\
+FILE:           stimuli.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines the formats of item table(s) and provides the actual content of
+the item table(s) i.e. stimulus information.
+
+
+HISTORY:
+2011-10-26 TV   Created.
+
+\******************************************************************************/
+
+TestItem [..] test_items;
+
+enum FlankerType
+{
+    CONGRUENT,
+    NEUTRAL,
+    INCONGRUENT,
+}
+
+enum DirectionType
+{
+    LEFT,
+    RIGHT,
+    NONE
+}
+
+// Item record used for the test phase item table.
+record TestItem
+{
+    int             id;             // item id
+    int             isi;
+    FlankerType     flankers;
+    DirectionType   side;
+    string          filename;
+}
+
+// Loads item table(s) from CSV file(s) in the stimuli folder.
+// if(test::load_stimuli(test::testitem_list_normal, filename) != OK)
+int load_stimuli(TestItem[] target, string filename)
+{
+    int err = 0;
+    
+    //load in the test_items in a temp
+    err =  target.load(stimuli_dir() + filename,
+        true,           // if true, file contains a header row
+        1);             // number of lines to skip before header and data
+     if (err > 0) return err;
+
+    return OK;
+}
+
+// simple print of the test Item array.
+void print_TestItem_array(TestItem[] test_items)
+{
+    int n;
+    int nitems = test_items.size;
+    while (n < nitems)
+    {
+        println(
+            string(n) + "\t" +
+            string(test_items[n].id) + "\t" +
+            string(test_items[n].flankers) + "\t" +
+            string(test_items[n].side));
+        n++;
+    }
+    println("======");
+}

@@ -1,0 +1,22 @@
+/******************************************************************************\
+FILE:           defs.zm
+AUTHOR:         Theo Veenker <theo.veenker@beexy.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines the experiment version and database related settings.
+
+
+ATTENTION:
+
+    For Zep 1.10 and later this file simply imports globaldefs.zm
+
+
+HISTORY:
+2011-06-07 TV   Created as part of the standard Zep modules.
+2013-07-02 TV	Content changed to import globaldefs.
+
+\******************************************************************************/
+
+import globaldefs;

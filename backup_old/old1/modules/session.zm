@@ -1,0 +1,40 @@
+/******************************************************************************\
+FILE:           session.zm
+AUTHOR:         Theo Veenker <theo.veenker@beexy.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Session specific initialization.
+
+
+HISTORY:
+2011-06-07 TV   Created as part of the standard Zep modules.
+
+\******************************************************************************/
+
+
+// This function is called after group assignment and check out of experiment,
+// researcher, participant and group records, but before the new session has 
+// been created. At this point the database is fully accessible.
+int setup_pre_session()
+{
+    return OK;
+}
+
+
+// This function is called just after the new session has been created. So
+// the new session id is known. At this point the database is still fully 
+// accessible.
+int setup_session()
+{
+    int error_code = load_stimuli();
+    if(error_code > 0)
+    {
+      println("Could not load stimuli");
+      println("Error code: " + error_code);
+      return ERROR;
+    }
+    //else
+    return OK;
+}

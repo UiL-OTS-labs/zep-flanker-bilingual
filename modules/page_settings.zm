@@ -1,0 +1,33 @@
+/******************************************************************************\
+FILE:           page_settings.zm
+AUTHOR:         Theo Veenker <theo.veenker@beexy.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines page transition delay and duration.
+
+
+HISTORY:
+2011-08-23 TV   Created as part of the standard Zep modules.
+
+\******************************************************************************/
+
+
+// Default page show delay. Used by pause, blank, etcal, entry and exit pages.
+// dur             PAGE_TRANSITION_DELAY           = 0ms;
+dur             PAGE_TRANSITION_DELAY           = 500ms;
+const dur       MAX_PAGE_TRANSITION_DELAY       = 10000ms;
+
+
+// Default page transition duration.
+dur             PAGE_TRANSITION_DURATION        = 0ms;
+//dur             PAGE_TRANSITION_DURATION        = 200ms;
+const dur       MAX_PAGE_TRANSITION_DURATION    = 1000ms;
+
+
+// Default extra delay before first trial following a pause, blank, etcal or
+// entry page.
+//dur             FIRST_TRIAL_EXTRA_DELAY         = 0ms;
+dur             FIRST_TRIAL_EXTRA_DELAY         = 1000ms;
+const dur       MAX_FIRST_TRIAL_EXTRA_DELAY     = 10000ms;

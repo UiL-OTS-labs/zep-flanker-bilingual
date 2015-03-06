@@ -1,0 +1,88 @@
+/******************************************************************************\
+FILE:           random.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Item table randomization functions.
+
+
+HISTORY:
+2011-10-26 TV   Created.
+
+\******************************************************************************/
+
+
+// Shuffles test_items table (no restrictions on item order).
+int shuffle_test_items(TestItem[] test_items)
+{
+    int nitems = test_items.size;
+ 
+    // Depending on criteria and table contents it may happen that it takes
+    // several attempts to make the shuffling succeed. We'll try it 100 times
+    // before giving up.
+    int nattempts;
+    bool again = true;
+    while (again && ++nattempts < 100)
+    {
+        // First shuffle the entire item table.
+        again = false;
+        test_items.shuffle(0, -1);
+ 
+        // Walk over the table and check for items conflicting with the
+        // criterion. If an item conflicts, then swap it randomly with one
+        // of the items not yet looked at.
+        int n = 2;
+        while (n < nitems)
+        {
+            int nitemswaps;
+            while (!check_rule_compliance(n, test_items))
+            {
+                if (n+1 == nitems || ++nitemswaps == 10)
+                {
+                    again = true;
+                    break;
+                }
+                test_items.swap(n, random(n, nitems - n));
+            }
+            if (again) break;
+            n++;
+        }
+    }
+ 
+    if (again)
+        println("Unable to shuffle test_items according to criteria. "
+            "Check table and/or criteria.");
+ 
+    return again ? ERROR : OK;
+}
+
+bool check_rule_compliance(int n, TestItem[] test_items)
+{
+    if( n >= 4 )
+    {
+        if
+            (
+            test_items[n].side == test_items[n-1].side &&
+            test_items[n].side == test_items[n-2].side &&
+            test_items[n].side == test_items[n-3].side
+            )
+            return false;
+    }
+    else 
+        if
+            (
+            test_items[n].flankers == test_items[n-1].flankers &&
+            test_items[n].flankers == test_items[n-2].flankers
+            )
+            return false;
+    else
+        if
+            (
+                test_items[n].flankers == test_items[n-1].flankers &&
+                test_items[n].side == test_items[n-1].side
+            )
+            return false;
+    return true;
+}

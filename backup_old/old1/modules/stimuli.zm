@@ -1,0 +1,112 @@
+/******************************************************************************\
+FILE:           stimuli.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines the formats of item table(s) and provides the actual content of
+the item table(s) i.e. stimulus information.
+
+
+HISTORY:
+2011-10-26 TV   Created.
+
+\******************************************************************************/
+
+enum BlockOrderType 
+{
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H
+}
+
+BlockOrderType[..] BLOCK_ORDER_ORDER = 
+{
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H
+};
+
+int[..][..] BLOCK_ORDER_PER_TYPE = 
+{
+    {1, 2, 3, 4}, // A
+    {1, 4, 3, 2}, // B
+    {2, 1, 4, 3}, // C
+    {2, 3, 4, 1}, // D
+    {3, 2, 1, 4}, // E
+    {3, 4, 1, 2}, // F
+    {4, 1, 2, 3}, // G
+    {4, 3, 2, 1}  // H
+};
+
+TestItem [..][..] test_items;
+
+// Item record used for the test phase item table.
+record TestItem
+{
+    int         segment;
+    int         id;             // item id
+    string      sound_fnm;           // item type
+    int         expected_answer;          // stimulus sound filename
+}
+
+// Loads item table(s) from CSV file(s) in the stimuli folder.
+// if(test::load_stimuli(test::testitem_list_normal, filename) != OK)
+int load_stimuli()
+{
+    int err = 0;
+    
+    //load in the test_items in a temp
+    TestItem[..] temp_target;
+    err =  temp_target.load(stimuli_dir() + "test_items.csv",
+        true,           // if true, file contains a header row
+        1);             // number of lines to skip before header and data
+     if (err > 0) return err;
+
+    // Devide test items over segements
+    test_items.size = BLOCK_ORDER_PER_TYPE[0].size;
+    int index = 0;
+    TestItem item;
+    
+    while(index<temp_target.size)
+    {
+        item = temp_target[index];
+        int index_segment = item.segment -1;
+        test_items[index_segment].size = test_items[index_segment].size + 1;
+        test_items[index_segment][test_items[index_segment].size-1] = item;
+        index++;
+    }
+    
+    // shuffle the BLOCK_ORDER_ORDER TO DO UNCOMMENT
+    BLOCK_ORDER_ORDER.shuffle(0,-1);
+    return OK;
+}
+
+// simple print of the test Item array.
+void print_TestItem_array(TestItem[] test_items)
+{
+    int n;
+    int nitems = test_items.size;
+    while (n < nitems)
+    {
+        println(
+            string(n) + "\t" +
+            string(test_items[n].segment) + "\t" +
+            string(test_items[n].id) + "\t" +
+            string(test_items[n].sound_fnm) + "\t" +
+            string(test_items[n].expected_answer));
+        n++;
+    }
+    println("======");
+}

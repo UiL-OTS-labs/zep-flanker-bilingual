@@ -1,0 +1,145 @@
+/******************************************************************************\
+FILE:           practice_block.zm
+AUTHOR:         Chris van Run <C.P.A.vanRun@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION: Contains the practice_block
+
+HISTORY:
+2014-08-19 CvR   Created.
+
+\******************************************************************************/
+
+requires 1.10;
+
+import pause_repeat_continue_page;
+
+Block practice_block
+{
+    TestOutput[..] prac_output;
+
+	on_event:exit()
+        {
+            // Save test output table as CSV file.
+            // test_output_save_and_clear(prac_output, ": Practice results :");
+        }
+        
+// 	 Part instructions
+//     {
+//         on_event:entry()
+//         {
+// //            pause_page.set_text_size(1000, 600);
+
+//             pause_page.set_text(INSTRUCTION_TEXT, true);
+//             pause_page.action(this);
+//             control.button_box.enable_all_buttons(0);
+//         }
+        
+//         on_event:exit()
+//         {
+// 			// clean up
+// 			control.button_box.disable_buttons();
+// 		}
+//     }
+    
+    Block practice
+    {
+        // Test phase output table.
+        TestItem[..] 	test_items;
+        TestItem		item;   // current item
+
+        on_event:entry()
+        {			
+            num_cycles = test_items.size;
+        }
+		
+		on_event:exit()
+        {     
+            choose_1of2_page.cleanup();
+		}
+
+        Trial soundstim
+        {
+            on_event:entry()
+            {
+                item = test_items[practice.cycle];
+                test_page.action(this, item, now());
+            }
+
+            on_event:exit()
+            {
+                test_page.cleanup();
+            }
+        }
+
+        Trial question
+        {
+            on_event:entry()
+            {
+                choose_1of2_page.set_text(QUESTION_TEXT);
+                choose_1of2_page.set_label_texts(LITERAL_YES_BUTTON_TEXT, LITERAL_NO_BUTTON_TEXT);
+                choose_1of2_page.set_keys(KEY_Shift_L, KEY_Shift_R);
+                choose_1of2_page.action(this, item.expected_answer+1, 0, 200ms);
+            }
+
+            on_event:exit()
+            {
+                TestOutput  output;
+                
+                // Add new row to test output table;
+                output.trialnum = practice.cycle;       // trial number
+                output.id = item.id;             // item id
+                output.sound1_fnm= item.sound1_fnm;           // item type
+                output.sound2_fnm= item.sound2_fnm;           // item type
+                output.time_to_answer = choose_1of2_page.response.rt;
+                output.given_answer = choose_1of2_page.response.value-1;
+                output.expected_answer = item.expected_answer;          // stimulus sound filename
+                output.correctness_answer = choose_1of2_page.response.correct;
+
+                test_output_append(prac_output, output);
+            }
+		}
+	}
+	
+	 Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+    
+     Part final_instructions
+    {
+        on_event:entry()
+        {
+//            pause_page.set_text_size(1000, 600);
+
+            pause_repeat_continue_page.set_text(FINAL_INSTRUCTION_TEXT, true);
+            pause_repeat_continue_page.action(this, 0s, -1s, 500ms, true, 2s, practice_block);
+            control.button_box.enable_all_buttons(CONTINUE);
+        }
+        
+        on_event:exit()
+        {
+			// clean up
+			control.button_box.disable_buttons();
+		}
+    }
+}
+
+
+void action(Part caller, TestItem[] test_items_in)
+{
+    practice_block.practice.test_items.size = test_items_in.size;
+
+    int index = 0;
+    while(index < test_items_in.size)
+    {
+        practice_block.practice.test_items[index] = test_items_in[index];
+        index++;
+    }
+    // Activate the task. When the task is done, the registered caller
+    // (c.q. the main experiment object) will automatically be signalled.
+    practice_block.enter(caller);
+}

@@ -1,0 +1,96 @@
+/******************************************************************************\
+FILE:           practice_block.zm
+AUTHOR:         Chris van Run <C.P.A.vanRun@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION: Contains the practice_block
+
+HISTORY:
+2014-08-19 CvR   Created.
+
+\******************************************************************************/
+
+requires 1.10;
+
+
+Block sub_block
+{
+    // holds the block_order_type
+    BlockOrderType block_order_type;
+
+    // holds the order of the segments (n=4, n1=1...n4=4)
+    int[..] test_block_segment_order;
+
+    on_event:entry()
+    {           
+        num_cycles = test_block_segment_order.size;
+    }
+
+    Block test_block
+    {
+        int segment_index;
+        TestItem test_item;
+
+        on_event:entry()
+        {
+            segment_index = test_block_segment_order[sub_block.cycle]-1;
+
+            // shuffle the presentation list (at every itteration)
+            test_items[segment_index].shuffle(0,-1);
+            
+            num_cycles = test_items[segment_index].size;
+        }
+
+    Trial soundstim
+      {
+        on_event:entry()
+        {
+            test_item = test_items[segment_index][test_block.cycle];
+
+            // setting the keys for the yes and now buttons. 
+            test_page.set_keys(1, 0);
+            test_page.set_colors(COLOR_FOR_YES_BUTTON,COLOR_FOR_NO_BUTTON);
+            test_page.set_label_texts(LITERAL_YES_BUTTON_TEXT, LITERAL_NO_BUTTON_TEXT);
+            test_page.action(this, test_item, now());
+
+            // debug line:
+            //println("Present: " + sub_block.block_order_type + " " + test_item.segment + " " + test_item.id);
+        }
+      }
+    }
+
+    Part //after each test_block hold a break
+    {
+        on_event:entry()
+        {
+            if(sub_block.cycle != sub_block.num_cycles-1) //only pause if it isn't the last one
+            {
+                pause_page.set_text(PAUSE1_TEXT, true);
+                pause_page.action(this, 0s, -1s, 200ms, true, 2s);
+                // println("Small_break");
+                // signal(this,CONTINUE);
+            }
+            else
+                signal(this, CONTINUE);
+        }
+    }
+}
+
+void action(Part caller, int[] test_block_segment_order_in, BlockOrderType block_order_type_in)
+{
+    //set the block_order_type
+    sub_block.block_order_type = block_order_type_in;
+
+    // copy over the test_block_segment_order into the test_block order array.
+    sub_block.test_block_segment_order.size = test_block_segment_order_in.size;
+    int index = 0;
+    while(index < test_block_segment_order_in.size)
+    {
+        sub_block.test_block_segment_order[index] = test_block_segment_order_in[index];
+        index++;
+    }
+
+    // Activate the task. When the task is done, the registered caller
+    // (c.q. the main experiment object) will automatically be signalled.
+    sub_block.enter(caller);
+}

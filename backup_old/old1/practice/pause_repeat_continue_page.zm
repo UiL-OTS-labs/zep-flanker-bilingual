@@ -1,0 +1,308 @@
+/******************************************************************************\
+FILE:           pause_repeat_continue_page.zm
+AUTHOR:         Theo Veenker <theo.veenker@beexy.nl>
+ADAPTED BY:     Chris van Run (C.P.A.vanrun@uu.nl)
+
+DESCRIPTION:
+
+Provides a page object for displaying messages. It consists of a message area 
+and several buttons.
+
+
+HISTORY:
+2009-12-02 TV   Created as part of the standard Zep modules.
+2014-06-16 CvR	Added a non-response period to have a minimum duration of pause.
+2014-08-19 CvR  Added a few buttons and adjusted it to the violdec experiment.
+
+\******************************************************************************/
+
+
+Page pause_repeat_continue_page
+{
+    bool        checkkeys;      // if set, continue keys enabled
+	Block		repeat_target;
+
+    init()
+    {
+        fill_pattern_color = INFO_PAGE_COLOR;
+    }
+
+
+    on_event:key_press()
+    {
+		if(input_key == 'c')
+				done_option(CONT);
+		else if(input_key == 'r')
+		{
+			done_option(REPEAT);
+		}
+        else
+		{
+			if (target != null && checkkeys && input_key == KEY_Return)
+				done(CONTINUE);
+			else
+				handle_special_key(this, input_key, input_modifiers);
+		}
+    }
+
+
+    on_event:message()
+    {
+        // Handle 'continue' message received from control page.
+        if (message_sender == control)
+        {
+			if(message_arg == 1)
+				done_option(CONT);
+			else
+				done_option(REPEAT);
+		}
+    }
+    	
+	VerticalLayout layout
+	{
+		init()
+		{
+			options = LAYOUT_SHRINK_ITEMS;
+			spacing = 50;
+		}
+
+
+		LabelGadget message
+		{
+			init()
+			{
+				font_family = INFO_PAGE_MESSAGE_FONT_FAMILY;
+				font_size = INFO_PAGE_MESSAGE_FONT_SIZE;
+				fill_pattern_color = INFO_PAGE_MESSAGE_COLOR;
+				text_color = INFO_PAGE_MESSAGE_TEXT_COLOR;
+				hor_alignment = ALIGN_CENTER;
+				ver_alignment = ALIGN_CENTER;
+				is_wrapping = true;
+				size = 900, -1;
+				margin = 20;
+				border = 3;
+				border_style = BORDER_RIDGE;
+			}
+		}
+
+		HorizontalLayout hlayout
+		{
+			init()
+			{
+				options = LAYOUT_SHRINK_ITEMS;
+				spacing = 100;
+			}
+			 
+			 ButtonGadget cont
+				{
+					init()
+					{
+						text = CONTINUE_BUTTON_TEXT, true;
+						font_family = INFO_PAGE_BUTTON_FONT_FAMILY;
+						font_size = INFO_PAGE_BUTTON_FONT_SIZE;
+						fill_pattern_color = INFO_PAGE_BUTTON_COLOR;
+						text_color = INFO_PAGE_BUTTON_TEXT_COLOR;
+						margin = 5;
+						border = 4;
+					}
+
+
+					on_event:activate()
+					{
+						done_option(CONT);
+					}
+				}
+				
+				ButtonGadget repeat
+				{
+					init()
+					{
+						text = REPEAT_BUTTON_TEXT, true;
+						font_family = INFO_PAGE_BUTTON_FONT_FAMILY;
+						font_size = INFO_PAGE_BUTTON_FONT_SIZE;
+						fill_pattern_color = INFO_PAGE_BUTTON_COLOR;
+						text_color = INFO_PAGE_BUTTON_TEXT_COLOR;
+						margin = 5;
+						border = 4;
+					}
+
+
+					on_event:activate()
+					{
+						done_option(REPEAT);
+					}
+				}
+			}
+		}
+
+
+    Timer timer
+    {
+        on_event:expire()
+        {
+            done(TIMEOUT);
+        }
+    }
+
+	Timer non_response_period
+	{
+		on_event:expire()
+		{
+			checkkeys = true;
+			show_buttons();
+		}
+	} 
+	
+	void done_option(int op)
+	{
+		if(op == REPEAT)
+		{
+			repeat_target.repeat();
+		}
+		else if(op == CONT)
+		{
+			done(CONTINUE);
+		}
+			
+	}
+	
+    void done(int msgid)
+    {
+        timer.abort();
+
+        checkkeys = false;
+
+        signal_target(msgid);   // Tell caller we're done.
+        target = null;
+
+        if (control.target == this)
+        {
+            control.disable_keys();
+			control.button_box.disable_buttons();
+            control.target = null;
+        }
+    }
+
+
+    //==========================================================================
+
+
+    void set_text(string txt, bool markup=false)
+    {
+        layout.message.text = txt, markup;
+    }
+
+
+    void set_text_size(int width, int height)
+    {
+       layout.message.size = width, height;
+    }
+
+
+    void show_buttons()
+    {
+		layout.hlayout.cont.is_visible = true;
+		layout.hlayout.repeat.is_visible = true;
+		control.button_box.enable_button(0, 1); // button 0 --> 1
+        control.button_box.enable_button(1, 2); // button 1 --> 2
+    }
+
+
+    void hide_buttons()
+    {
+        layout.hlayout.cont.is_visible = false;
+		layout.hlayout.repeat.is_visible = false;
+        control.button_box.disable_buttons();
+    }
+
+
+    void action_auto(dur timeout=0s, 
+        dur showdelay=-1s, dur fadedur=-1s)
+    {
+        action(null, timeout, showdelay, fadedur, false);
+    }
+
+    void action_auto(Object caller, dur timeout=0s, 
+        dur showdelay=-1s, dur fadedur=-1s)
+    {
+        action(caller, timeout, showdelay, fadedur, false);
+    }
+
+    void action(Object caller, dur timeout=0s, 
+        dur showdelay=-1s, dur fadedur=-1s, bool kbd=true,
+        dur disable_keys_dur = -1s, Block repeat_targ=null)
+    {
+        timer.abort();
+        
+		repeat_target = repeat_targ;
+		
+        // Force page show delay and transition duration in sane range.
+        if (showdelay < 0s) showdelay = PAGE_TRANSITION_DELAY;
+        else showdelay = limit(showdelay, 0s, MAX_PAGE_TRANSITION_DELAY);
+        if (fadedur < 0s) fadedur = PAGE_TRANSITION_DURATION;
+        else fadedur = limit(fadedur, 0s, MAX_PAGE_TRANSITION_DURATION);
+
+    	// Clear page transition delay.
+    	page_transition_delay = 0s;
+
+		// Let's delay the first test page trial following this page.
+		first_trial_delay = FIRST_TRIAL_EXTRA_DELAY;
+
+        if (test_window1.show_page(this, now() + showdelay, fadedur) == 0)
+        {
+            // Page not yet shown. Extend timeout period (if applicable) 
+            // until page is fully visible (fade-in has finished).
+            if (timeout > 0s) 
+                timeout += expected_transition_finish_time - now();
+        }
+
+        if (caller != null)
+        {
+			target = caller;
+            control.target = this;
+            control.disable_keys();
+            control.enable_key(KEY_Return, CONTINUE);
+            control.enable_key(' ', CONTINUE);
+			checkkeys = kbd && !test_window1.is_output_only();                
+            if (timeout > 0s) timer.start(now() + timeout);
+            
+            if (checkkeys)
+                test_window1.activate();
+            else if (test_window1.is_output_only())
+                ctrl_window.activate();
+                
+			if(disable_keys_dur > 0s)
+			{
+				checkkeys = false;
+				hide_buttons();
+				non_response_period.start(now() + disable_keys_dur);
+			}
+        } 
+        else
+        {
+            checkkeys = false;
+            target = null;
+        }
+    }
+
+    void stop_action()
+    {
+        timer.abort();
+
+        checkkeys = false;
+
+        target = null;
+
+        if (control.target == this)
+        {
+            control.disable_keys();
+            control.button_box.disable_buttons();
+            control.target = null;
+        }
+    }
+}
+
+enum Option {
+	CONT,
+	REPEAT,
+}

@@ -1,0 +1,146 @@
+/******************************************************************************\
+FILE:           flanker_task.zp
+AUTHOR:         Chris van Run <C.P.A.vanRun@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+This task shows 1 arrow flanked by 4 other arrows. 
+The flankers can be incongruent, congruent or neutral in respect to the centre arrow.
+There is a practice round.
+
+Each trial has a defined ISI (here 500ms) that is used as follows:
+T_0ms = empty_page
+T_500ms = fixation_cross_shown (T_0+ISI)
+T_800ms = fixation_cross_hides
+T_1000ms = arrows are shown
+T_1000ms+RT=participant_responses
+T_1000ms+RT+((total_trial_time-1000ms)-RT)=next trial starts;
+  Total_trial_time is now set at ~2 seconds so there is a delay after the response that is dependent on the response, ISI, fixation_cross_duration
+   If response is longer then the length duration it defaults to 0s.
+
+Randomisation is according to these rules:
+No more then 3 consecutive sides (direction).
+No more then 2 consecutive flanker (congruency).
+Never two consecutive trials that have the same congruency AND side.
+
+HISTORY:
+2014-11-03 CvR   Created.
+
+\******************************************************************************/
+
+requires 1.10;
+
+//globaly used modules
+import std_windows1;
+import std_entry_page1;
+import std_exit_page1;
+import std_blank_page;
+
+import texts_en;
+import test_page;
+import stimuli;
+import output;
+import pause_page;
+
+import practice::practice_block;
+import test::test_block;
+
+
+
+Experiment experiment
+{
+    on_event:entry()
+    {
+		// opens the button_box
+		control.button_box.open();
+
+    // If necessary set parallel port line D0 to power button box device.
+		control.button_box.output(0x02);
+		
+		// Load in Stimuli
+        show_test_windows();
+    }
+
+
+    on_event:message()
+    {
+        // On Ctrl+F4 jump unconditionally to the thank-you part.
+        if (message_sender == control && message_arg == SYS_STOP)
+        {
+            control.mark_experiment_aborted();
+            thankyou.enter();
+        }
+    }
+
+    Part welcome
+    {
+        on_event:entry()
+        {
+            entry_page.set_text(WELCOME_TEXT);
+            entry_page.action(this, 0s);
+        }
+    }
+
+	 Part
+    {
+        on_event:entry()
+        {
+            blank_page.fill_pattern_color = TEST_PAGE_COLOR;
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+    
+  Block main_practice
+  {
+    on_event:entry()
+    {
+      load_stimuli(test_items, "prac_items.csv");
+      practice::action(this, test_items);
+    }
+  }
+
+	Block main_block
+  {
+    init()
+    {
+      num_cycles = NUMBER_OF_BLOCKS;
+    }
+    
+    Part
+    {
+      on_event:entry()
+      {
+        test_page.hide_cursor();
+        	// Load test items table.
+      	load_stimuli(test_items, "test_items.csv");
+        if(shuffle_test_items(test_items) != OK) terminate;
+        bool pause = (main_block.num_cycles != main_block.cycle + 1);
+        test::action(this, test_items, main_block.cycle+1, pause);         
+      }
+    }
+  } 
+
+  Part
+  {
+      on_event:entry()
+      {
+          blank_page.fill_pattern_color = TEST_PAGE_COLOR;
+          blank_page.action_auto(this, 500ms);
+      }
+  }
+    
+  Part thankyou
+  {
+      on_event:entry()
+      {
+          test_page.show_cursor();
+          control.end_experiment();   // Check-in session.
+
+          exit_page.set_text(THANK_YOU_TEXT);
+          exit_page.action(this, 10s);
+          
+          // opens the button_box
+	        control.button_box.close();
+      }
+  }
+}

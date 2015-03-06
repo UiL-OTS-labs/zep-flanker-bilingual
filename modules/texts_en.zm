@@ -1,0 +1,75 @@
+/******************************************************************************\
+FILE:           std_texts_en.zm
+AUTHOR:         Theo Veenker <theo.veenker@beexy.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines texts on buttons and other graphic elements.
+English version.
+
+
+HISTORY:
+2009-12-02 TV   Created as part of the standard Zep modules.
+2014-08-19 CvR  added some texts for the introduction and pause.
+2014-11-03 CvR   Adapted for flanker_test.
+\******************************************************************************/
+
+// "INSTRUCTION TEXT\n\n"
+// "You can start new lines by adding \'\\n\' and you can use <i>italics</i> or <b>bold</b> via html tags.\n\n"
+// "This text, and others can be edited in <b>/modules/texts_en.zm</b>!\n\n"
+// "Other script behavior can be changed in <b>/modules/defs.zm</b> and <b>/modules/global_defs.zm</b>!\n\n"
+// "Stimuli go into the /stimuli/sounds/ folder, make sure the names remain similar!\n\n"
+// "Preset sequences (that are shuffled) are in the <b>/modules/stimuli.zm</b>.\n\n"
+// "<i>Press a button on the button box to continue!</i>";
+
+
+// Button texts.
+const string    	CONTINUE_BUTTON_TEXT            = "Continue";
+const string    	NEXT_BUTTON_TEXT                = "Next";
+const string    	REPEAT_BUTTON_TEXT              = "Repeat";
+const string    	YES_BUTTON_TEXT                 = "Yes";
+const string    	NO_BUTTON_TEXT                  = "No";
+const string    	TRUE_BUTTON_TEXT                = "True";
+const string    	FALSE_BUTTON_TEXT               = "False";
+const string    	CORRECT_BUTTON_TEXT             = "Correct";
+const string    	INCORRECT_BUTTON_TEXT           = "Incorrect";
+const string    	FIRST_BUTTON_TEXT               = "First";
+const string    	SECOND_BUTTON_TEXT              = "Second";
+
+
+// Other texts.
+const string    	WELCOME_TEXT                    = "Welcome";
+
+const string 	  	PAUSE_TEXT						= 
+						"Pause: Now is the time for a small break.\n"
+						"<i>Hit any button on the button-box when ready to go</i>";
+	
+const string    	THANK_YOU_TEXT                  = 
+						"End of Experiment\n\nThank you very much!";
+
+const string		INSTRUCTION_OVERLAY =
+						"Press the button that corresponds with the direction of the centered arrow";
+const string		INSTRUCTION_TEXT			= 
+						"<b>Dear participant,</b>\n"
+			            "\n"
+			            "Thank you for participating in this experiment.\n"
+			            "\n"
+			            "You are now going to see a set of arrows on the screen. \n"
+			            "Your task is to press the left or right button following \n"
+			            "the side the <b>centered</b> arrow points towards.\n"
+			            "\n"
+			            "Try to do this as quickly as possible while still trying to be accurate.\n"
+			            "\n"
+			            "\n"
+			            "First we will do a short practice round.\n"
+			            "<i>Hit any button on the button-box when ready to go</i>";				
+
+                
+const string		FINAL_INSTRUCTION_TEXT		=
+						"End of the practice part.\n"
+						"\n"
+						"If you have any questions at this moment please ask the"
+						"experimenter now.\n"
+						"\n"
+						"<i>Hit Enter when ready to proceed.</i>";

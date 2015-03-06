@@ -1,0 +1,52 @@
+/******************************************************************************\
+FILE:           output.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines the formats of output table(s).
+
+
+HISTORY:
+2011-10-26 TV   Created.
+
+\******************************************************************************/
+
+
+// Test phase output table record, defining what is to be logged for
+// each trial.
+record TestOutput
+{
+    int         block_nr;
+    int         trial_nr;       // trial number
+    int         id;             // item id
+    int         inter_stimulus_interval;
+    FlankerType congruence;
+    int         rt;
+    DirectionType selected_side;
+    DirectionType expected_side;
+    int         correct;
+}
+
+//------------------------------------------------------------------------------
+
+TestOutput[..] test_output;
+
+// Appends one row of data to test phase output table.
+void test_output_append(TestOutput[] test_output, TestOutput data)
+{
+    test_output.size = test_output.size + 1;
+    test_output[test_output.size-1] = data;
+}
+
+
+// Writes test phase output table contents to CSV file and clears the table.
+void test_output_save_and_clear(TestOutput[] test_output, string header_line = "Results", int table_nr = 1)
+{
+    // Append table to CSV file (create if non-existent). The filename 
+    // format is: <dbname>/<dbnum>/<expname>/ses<sesid>-<tblnum>.csv
+    test_output.append(expdb.experiment.session.table_filename(table_nr), 
+        header_line);
+    test_output.size = 0;
+}

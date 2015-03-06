@@ -1,0 +1,128 @@
+/******************************************************************************\
+FILE:           practice_block.zm
+AUTHOR:         Chris van Run <C.P.A.vanRun@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION: Contains the practice_block
+
+HISTORY:
+2014-11-03 CvR   Created.
+
+\******************************************************************************/
+
+requires 1.10;
+
+import pause_repeat_continue_page;
+
+Block practice_block
+{
+	on_event:exit()
+        {
+            // Save test output table as CSV file.
+            test_output_save_and_clear(test_output, ": Practice results :", 2);
+        }
+        
+	Part instructions
+    {
+        on_event:entry()
+        {
+//            pause_page.set_text_size(1000, 600);
+
+            pause_page.set_text(INSTRUCTION_TEXT, true);
+            pause_page.action(this);
+            control.button_box.enable_all_buttons(0);
+        }
+        
+        on_event:exit()
+        {
+			// clean up
+			control.button_box.disable_buttons();
+		}
+    }
+    
+    Block practice
+    {
+        TestItem[..] test_items;
+        
+        on_event:entry()
+        {
+            num_cycles = test_items.size;
+            test_page.setup(num_cycles, true, true);
+        }
+
+        on_event:exit()
+        {
+            test_page.cleanup();
+        }
+
+        Trial stimulus
+        {
+            TestItem item;
+
+            on_event:entry()
+            {
+                item = test_items[practice.cycle];
+                test_page.action(this, item, now(), practice.cycle);
+
+                // debug line:
+                // println("Present: " + test_block.cycle + " " + item.id);
+                // signal(this,CONTINUE);
+            }
+
+            on_event:exit()
+            {
+                //generate and append output.
+                TestOutput output;
+                output.block_nr = -1;
+                output.trial_nr = practice.cycle+1;
+                output.id = item.id;
+                output.inter_stimulus_interval = item.isi;
+                output.congruence = item.flankers;
+                output.rt = test_page.response.rt;
+                output.selected_side = item.side;
+                output.expected_side = test_page.response.value;
+                output.correct = test_page.response.correct;
+                test_output_append(test_output, output);
+            }
+        }
+    }
+
+	 Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+    
+     Part final_instructions
+    {
+        on_event:entry()
+        {
+            //pause_page.set_text_size(1000, 600);
+            pause_repeat_continue_page.set_text(FINAL_INSTRUCTION_TEXT, true);
+            pause_repeat_continue_page.action(this, 0s, -1s, 500ms, true, 2s, practice_block);
+            control.button_box.enable_all_buttons(CONTINUE);
+        }
+        
+        on_event:exit()
+        {
+            pause_repeat_continue_page.cleanup();
+		}
+    }
+}
+
+void action(Part caller, TestItem[] test_items_in)
+{
+    practice_block.practice.test_items.size = test_items_in.size;
+
+    int index = 0;
+    while(index < test_items_in.size)
+    {
+        practice_block.practice.test_items[index] = test_items_in[index];
+        index++;
+    }
+    // Activate the task. When the task is done, the registered caller
+    // (c.q. the main experiment object) will automatically be signalled.
+    practice_block.enter(caller);
+}

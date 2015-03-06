@@ -1,0 +1,64 @@
+/******************************************************************************\
+FILE:           globaldefs.zm
+AUTHOR:         Theo Veenker <theo.veenker@beexy.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines global experiment settings such experiment version, database id and
+id of the default researcher.
+
+
+HISTORY:
+2013-07-03 TV   Created.
+2014-08-19 CvR  Adapted.
+
+\******************************************************************************/
+
+
+// Experiment version. In piloting stage and later increment this on each 
+// relevant change.
+const int       EXPERIMENT_VERSION              = 1;
+
+
+// Database id. Any alphanumeric identifier is OK (typically set to "01").
+const string    DATABASE_NUMBER                 = "01";
+
+
+// ID of default researcher.
+const string    DEFAULT_RESEARCHER_ID           = "JD"; // John Doe
+
+
+// Whether experiment record, researcher record and group record should 
+// be checked out for updating (true) or reading only (false) during the 
+// experiment session. The participant record and experiment session 
+// record are always checked out for updating.
+const bool      EXPERIMENT_RECORD_UPDATEABLE    = false;
+const bool      RESEARCHER_RECORD_UPDATEABLE    = false;
+const bool      GROUP_RECORD_UPDATEABLE         = false;
+
+
+// Controls whether the assigned group is shown in the control window.
+// Set this to false if the experimenter should not be aware of the 
+// selected group.
+const bool      SHOW_ASSIGNED_GROUP             = true;
+
+// Duration of the interval between two trials.
+const dur       INTERTRIAL_INTERVAL             = 1000ms;
+
+// Duration of the feedback presentation.
+const dur       FEEDBACK_DURATION               = 1000ms;
+
+// Duration of the response interval.
+const dur       RESPONSE_DURATION               = 1000ms;
+
+// latency before continuing is possible following a pause
+const dur		NON_RESPONSE_PERIOD_AT_PAUSE 	= 2s;
+
+const dur 		SOUND_TRAILER_DURATION = 500ms;
+const dur 		DELAY_FIXATION_SOUND = 500ms;
+
+const string	TEST_ITEM_FILENAME = "test_items.csv";
+
+const color 	COLOR_FOR_YES_BUTTON = color:lightgreen;
+const color 	COLOR_FOR_NO_BUTTON = color:lightcoral;
