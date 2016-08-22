@@ -37,10 +37,10 @@ Experiment experiment
     on_event:entry()
     {
 		// opens the button_box
-		control.button_box.open();
+		control.button_box.open("/dev/ttyACM0");
 
     // If necessary set parallel port line D0 to power button box device.
-		control.button_box.output(0x02);
+		
 		
 		// Load in Stimuli
         show_test_windows();

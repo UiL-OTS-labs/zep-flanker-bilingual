@@ -204,7 +204,7 @@ Page pause_repeat_continue_page
 		layout.hlayout.cont.is_visible = true;
 		layout.hlayout.repeat.is_visible = true;
 		control.button_box.enable_button(0, 1); // button 0 --> 1
-        control.button_box.enable_button(1, 2); // button 1 --> 2
+        control.button_box.enable_button(2, 2); // button 1 --> 2
     }
 
 

@@ -255,7 +255,7 @@ Page choose_1of2_page
         control.target = this;
         control.button_box.disable_buttons();
         control.button_box.enable_button(0,1);
-        control.button_box.enable_button(1,2);
+        control.button_box.enable_button(2,2);
 
     	// Clear first trial delay.
 	   first_trial_delay = 0s;

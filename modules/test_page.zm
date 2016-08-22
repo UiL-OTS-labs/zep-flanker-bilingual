@@ -220,7 +220,7 @@ Page test_page
         control.target = this;
         control.button_box.disable_buttons();
         control.button_box.enable_button(0, 0); // button 0 means left(0)
-        control.button_box.enable_button(1, 1); // button 1 means right(1)
+        control.button_box.enable_button(2, 1); // button 1 means right(1)
     }
 
 

@@ -292,7 +292,7 @@ Page test_page
         control.target = this;
         control.button_box.disable_buttons();
         control.button_box.enable_button(0,key_left);
-        control.button_box.enable_button(1,key_right);
+        control.button_box.enable_button(2,key_right);
 
         // Update status line on control window. Cleared in done() above.
         control.set_status(
