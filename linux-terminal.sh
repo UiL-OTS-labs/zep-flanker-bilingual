@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 # Define required Zep version:
-ZEP_VER=1.10
+ZEP_VER=1.12
 
 # Iff installed at nonstandard location, define installation location here:
 #ZEP_DIR=/opt/zep

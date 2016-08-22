@@ -10,7 +10,7 @@ HISTORY:
 
 \******************************************************************************/
 
-requires 1.10;
+requires 1.12;
 
 import pause_repeat_continue_page;
 
