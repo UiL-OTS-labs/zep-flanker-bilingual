@@ -10,7 +10,6 @@ HISTORY:
 
 \******************************************************************************/
 
-requires 1.12;
 
 Block test_block
 {
@@ -33,7 +32,7 @@ Block test_block
     Block test
     {
         TestItem[..] test_items;
-        
+
         on_event:entry()
         {
             test_page.hide_cursor();
@@ -88,7 +87,7 @@ Block test_block
             blank_page.action_auto(this, 500ms);
         }
     }
-    
+
      Part pause
     {
         bool have_pause;
@@ -103,7 +102,7 @@ Block test_block
             else
                 signal(this, CONTINUE);
         }
-        
+
         on_event:exit()
         {
             pause_page.cleanup();

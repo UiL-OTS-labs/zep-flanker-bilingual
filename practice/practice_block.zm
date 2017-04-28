@@ -10,7 +10,6 @@ HISTORY:
 
 \******************************************************************************/
 
-requires 1.12;
 
 import pause_repeat_continue_page;
 
@@ -21,7 +20,7 @@ Block practice_block
             // Save test output table as CSV file.
             test_output_save_and_clear(test_output, ": Practice results :", 2);
         }
-        
+
 	Part instructions
     {
         on_event:entry()
@@ -32,18 +31,18 @@ Block practice_block
             pause_page.action(this);
             control.button_box.enable_all_buttons(0);
         }
-        
+
         on_event:exit()
         {
 			// clean up
 			control.button_box.disable_buttons();
 		}
     }
-    
+
     Block practice
     {
         TestItem[..] test_items;
-        
+
         on_event:entry()
         {
             num_cycles = test_items.size;
@@ -94,7 +93,7 @@ Block practice_block
             blank_page.action_auto(this, 500ms);
         }
     }
-    
+
      Part final_instructions
     {
         on_event:entry()
@@ -104,7 +103,7 @@ Block practice_block
             pause_repeat_continue_page.action(this, 0s, -1s, 500ms, true, 2s, practice_block);
             control.button_box.enable_all_buttons(CONTINUE);
         }
-        
+
         on_event:exit()
         {
             pause_repeat_continue_page.cleanup();

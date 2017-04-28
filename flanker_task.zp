@@ -4,7 +4,7 @@ AUTHOR:         Chris van Run <C.P.A.vanRun@uu.nl>
 ADAPTED BY:     -
 
 DESCRIPTION:
-This task shows 1 arrow flanked by 4 other arrows. 
+This task shows 1 arrow flanked by 4 other arrows.
 The flankers can be incongruent, congruent or neutral in respect to the centre arrow.
 There is a practice round.
 
@@ -28,7 +28,7 @@ HISTORY:
 
 \******************************************************************************/
 
-requires 1.12;
+requires 1.14;
 
 //globaly used modules
 import std_windows1;
@@ -55,8 +55,8 @@ Experiment experiment
 		control.button_box.open("/dev/ttyACM0");
 
     // If necessary set parallel port line D0 to power button box device.
-		
-		
+
+
 		// Load in Stimuli
         show_test_windows();
     }
@@ -89,7 +89,7 @@ Experiment experiment
             blank_page.action_auto(this, 500ms);
         }
     }
-    
+
   Block main_practice
   {
     on_event:entry()
@@ -105,7 +105,7 @@ Experiment experiment
     {
       num_cycles = NUMBER_OF_BLOCKS;
     }
-    
+
     Part
     {
       on_event:entry()
@@ -115,10 +115,10 @@ Experiment experiment
       	load_stimuli(test_items, "test_items.csv");
         if(shuffle_test_items(test_items) != OK) terminate;
         bool pause = (main_block.num_cycles != main_block.cycle + 1);
-        test::action(this, test_items, main_block.cycle+1, pause);         
+        test::action(this, test_items, main_block.cycle+1, pause);
       }
     }
-  } 
+  }
 
   Part
   {
@@ -128,7 +128,7 @@ Experiment experiment
           blank_page.action_auto(this, 500ms);
       }
   }
-    
+
   Part thankyou
   {
       on_event:entry()
@@ -138,7 +138,7 @@ Experiment experiment
 
           exit_page.set_text(THANK_YOU_TEXT);
           exit_page.action(this, 10s);
-          
+
           // opens the button_box
 	        control.button_box.close();
       }
