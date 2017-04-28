@@ -1,4 +1,0 @@
-### TestStimuli ###;;;
-id;sound1;sound2;expectedAnswer
-1;bada1.wav;bada1.wav;1
-2;bada1.wav;bada2.wav;0

@@ -1,3 +1,0 @@
-dbid;expid;resid;ppid;grpid;sesid;sesdate;sestime;sesrepexp;sesrepgrp;sesstat;expstat;expver;trialnum;id;sound1_fnm;sound2_fnm;time_to_answer;given_answer;expected_answer;correctness_answer
-01;ident_disc;JD;dummy;ALL;47;2014-10-20;16:17;6;6;3;0;1;0;1;bada1.wav;bada1.wav;16201;0;1;0
-01;ident_disc;JD;dummy;ALL;47;2014-10-20;16:17;6;6;3;0;1;1;2;bada1.wav;bada2.wav;5156;1;0;0
