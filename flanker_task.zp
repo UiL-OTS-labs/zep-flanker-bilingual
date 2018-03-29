@@ -1,11 +1,18 @@
 /******************************************************************************\
 FILE:           flanker_task.zp
 AUTHOR:         Chris van Run <C.P.A.vanRun@uu.nl>
-ADAPTED BY:     -
+ADAPTED BY:     Maarten
 
 DESCRIPTION:
-This task shows 1 arrow flanked by 4 other arrows.
-The flankers can be incongruent, congruent or neutral in respect to the centre arrow.
+
+In this task there are 5 arrows. The one in the middle is flanked by 2 arrows
+on both sides. Participant respond with a left and right button, depending on
+the direction of the arrow in the center. If the flanking arrows point in the
+same direction as the center arrow it is a congruent trial, if the flankers
+point in the opposite direction the trial type is called incongruent.
+Additionally, there are trials flanked by stripes, these are the Neutral trials
+because the stripes do not point in a direction.
+
 There is a practice round.
 
 Each trial has a defined ISI (here 500ms) that is used as follows:
@@ -15,10 +22,12 @@ T_800ms = fixation_cross_hides
 T_1000ms = arrows are shown
 T_1000ms+RT=participant_responses
 T_1000ms+RT+((total_trial_time-1000ms)-RT)=next trial starts;
-  Total_trial_time is now set at ~2 seconds so there is a delay after the response that is dependent on the response, ISI, fixation_cross_duration
-   If response is longer then the length duration it defaults to 0s.
 
-Randomisation is according to these rules:
+Total trial time is now set at ~2 seconds so there is a delay after the
+response that is dependent on the response, ISI, fixation_cross_duration
+If response is longer than the length duration it defaults to 0s.
+
+Randomization is according to these rules:
 No more then 3 consecutive sides (direction).
 No more then 2 consecutive flanker (congruency).
 Never two consecutive trials that have the same congruency AND side.
@@ -30,7 +39,7 @@ HISTORY:
 
 requires 1.14;
 
-//globaly used modules
+//globally used modules
 import std_windows1;
 import std_entry_page1;
 import std_exit_page1;
@@ -44,8 +53,6 @@ import pause_page;
 
 import practice::practice_block;
 import test::test_block;
-
-
 
 Experiment experiment
 {
@@ -84,7 +91,7 @@ Experiment experiment
         }
     }
 
-	 Part
+	Part
     {
         on_event:entry()
         {
@@ -93,54 +100,54 @@ Experiment experiment
         }
     }
 
-  Block main_practice
-  {
-    on_event:entry()
+    Block main_practice
     {
-      load_stimuli(test_items, "prac_items.csv");
-      practice::action(this, test_items);
+        on_event:entry()
+        {
+            load_stimuli(test_items, "prac_items.csv");
+            practice::action(this, test_items);
+        }
     }
-  }
 
-	Block main_block
-  {
-    init()
+    Block main_block
     {
-      num_cycles = NUMBER_OF_BLOCKS;
+        init()
+        {
+            num_cycles = NUMBER_OF_BLOCKS;
+        }
+
+        Part
+        {
+            on_event:entry()
+            {
+                test_page.hide_cursor();
+                // Load test items table.
+                load_stimuli(test_items, "test_items.csv");
+                if(shuffle_test_items(test_items) != OK) terminate;
+                bool pause = (main_block.num_cycles != main_block.cycle + 1);
+                test::action(this, test_items, main_block.cycle+1, pause);
+            }
+        }
     }
 
     Part
     {
-      on_event:entry()
-      {
-        test_page.hide_cursor();
-        	// Load test items table.
-      	load_stimuli(test_items, "test_items.csv");
-        if(shuffle_test_items(test_items) != OK) terminate;
-        bool pause = (main_block.num_cycles != main_block.cycle + 1);
-        test::action(this, test_items, main_block.cycle+1, pause);
-      }
+        on_event:entry()
+        {
+            blank_page.fill_pattern_color = TEST_PAGE_COLOR;
+            blank_page.action_auto(this, 500ms);
+        }
     }
-  }
 
-  Part
-  {
-      on_event:entry()
-      {
-          blank_page.fill_pattern_color = TEST_PAGE_COLOR;
-          blank_page.action_auto(this, 500ms);
-      }
-  }
+    Part thankyou
+    {
+        on_event:entry()
+        {
+            test_page.show_cursor();
+            control.end_experiment();   // Check-in session.
 
-  Part thankyou
-  {
-      on_event:entry()
-      {
-          test_page.show_cursor();
-          control.end_experiment();   // Check-in session.
-
-          exit_page.set_text(THANK_YOU_TEXT);
-          exit_page.action(this, 10s);
-      }
-  }
+            exit_page.set_text(THANK_YOU_TEXT);
+            exit_page.action(this, 10s);
+        }
+    }
 }
