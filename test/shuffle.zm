@@ -1,0 +1,45 @@
+/******************************************************************************\
+FILE:           shuffle.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Item table randomization functions.
+
+
+HISTORY:
+2011-10-26 TV   Created.
+
+\******************************************************************************/
+
+import stimuli;
+
+const int SHUFFLE_MAX_ATTEMPTS = 100; // max number of shuffles before failing
+
+// Shuffles test_items table (no restrictions on item order).
+int shuffle_items()
+{
+    int nattempts   = 0;
+    bool again      = true;
+
+    while (again && nattempts < SHUFFLE_MAX_ATTEMPTS) {
+        test_items.shuffle(0, -1);
+        bool correct = check_rule_compliance();
+        again = !correct;
+        nattempts++;
+    }
+ 
+    if (again)
+        println("Unable to shuffle test_items according to criteria. "
+            "Check table and/or criteria.");
+ 
+    return again ? ERROR : OK;
+}
+
+// Checks whether the test items pseudo randomization is alright.
+// Returns true, when everything is alright, false otherwise.
+bool check_rule_compliance()
+{
+    return true;
+}

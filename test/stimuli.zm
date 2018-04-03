@@ -15,6 +15,7 @@ HISTORY:
 \******************************************************************************/
 
 TestItem [..] test_items;
+TestItem [..] prac_items;       // practice items
 
 enum FlankerType
 {
@@ -40,9 +41,7 @@ record TestItem
     string          filename;
 }
 
-// Loads item table(s) from CSV file(s) in the stimuli folder.
-// if(test::load_stimuli(test::testitem_list_normal, filename) != OK)
-int load_stimuli(TestItem[] target, string filename)
+int load_stimulus_file(TestItem[] target, string filename)
 {
     int err = 0;
     
@@ -50,7 +49,28 @@ int load_stimuli(TestItem[] target, string filename)
     err =  target.load(stimuli_dir() + filename,
         true,           // if true, file contains a header row
         1);             // number of lines to skip before header and data
-     if (err > 0) return err;
+
+    return err;
+}
+
+
+// Loads item table(s) from CSV file(s) in the stimuli folder.
+// if(test::load_stimuli(test::testitem_list_normal, filename) != OK)
+int load_stimuli()
+{
+    string prac = "prac_items.csv";
+    string test = "test_items.csv";
+    string fn = stimuli_dir() + prac;
+    if (prac_items.load(fn, true, 1) != OK) {
+        print_error("Unable to load: " + fn);
+        return ERROR;
+    }
+
+    fn = stimuli_dir() + test;
+    if (test_items.load(fn, true, 1) != OK) {
+        print_error("Unable to load: " + fn);
+        return ERROR;
+    }
 
     return OK;
 }

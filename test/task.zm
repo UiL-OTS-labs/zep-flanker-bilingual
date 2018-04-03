@@ -1,27 +1,57 @@
 /******************************************************************************\
-FILE:           practice_block.zm
+FILE:           task.zm
 AUTHOR:         Chris van Run <C.P.A.vanRun@uu.nl>
-ADAPTED BY:     -
+ADAPTED BY:     Maarten
 
-DESCRIPTION: Contains the test_block
+DESCRIPTION: Contains the description of the flow of the experiment
 
 HISTORY:
 2014-11-03 CvR   Created.
 
 \******************************************************************************/
 
+import test_page;
+import stimuli;
+import output;
 
-Block test_block
+Block task
 {
-    int block_nr;
 
-	on_event:exit()
+    Block practice
+    {
+
+        on_event:entry()
         {
-            // Save test output table as CSV file.
-            test_output_save_and_clear(test_output, ": Test results :", 1);
+            test_page.hide_cursor();
+
+            num_cycles = prac_items.size;
+
+            test_page.setup(prac_items.size, true, true);
         }
 
-     Part
+        Trial trial
+        {
+            TestItem item;
+
+            on_event:entry()
+            {
+                item = prac_items[practice.cycle];
+                test_page.action(
+                    this,
+                    item,
+                    reference_time,
+                    practice.num_cycles()
+                    );
+            }
+
+//            Can be used to save practice performance
+//            on_event:exit()
+//            {
+//            }
+        }
+    }
+
+    Part
     {
         on_event:entry()
         {
@@ -31,7 +61,6 @@ Block test_block
 
     Block test
     {
-        TestItem[..] test_items;
 
         on_event:entry()
         {
@@ -46,6 +75,7 @@ Block test_block
         {
             test_page.show_cursor();
             test_page.cleanup();
+            test_output_save_and_clear(test_output);
         }
 
         Trial stimulus
@@ -66,7 +96,7 @@ Block test_block
             {
                 //generate and save output.
                 TestOutput output;
-                output.block_nr = test_block.block_nr;
+//                output.block_nr = test_block.block_nr;
                 output.trial_nr = test.cycle+1;
                 output.id = item.id;
                 output.inter_stimulus_interval = item.isi;
@@ -75,55 +105,24 @@ Block test_block
                 output.selected_side = item.side;
                 output.expected_side = test_page.response.value;
                 output.correct = test_page.response.correct;
+
                 test_output_append(test_output, output);
             }
         }
     }
 
-	 Part
+	Part
     {
         on_event:entry()
         {
             blank_page.action_auto(this, 500ms);
         }
     }
-
-     Part pause
-    {
-        bool have_pause;
-        on_event:entry()
-        {
-            if(have_pause)
-            {
-                //pause_page.set_text_size(1000, 600);
-                pause_page.set_text(PAUSE_TEXT, true);
-                pause_page.action_non_respond(this, 2s);
-            }
-            else
-                signal(this, CONTINUE);
-        }
-
-        on_event:exit()
-        {
-            pause_page.cleanup();
-		}
-    }
 }
 
-void action(Part caller, TestItem[] test_items_in, int block_nr_in, bool pause = true)
+void action(Part caller)
 {
-    test_block.block_nr = block_nr_in;
-    test_block.pause.have_pause = pause;
-
-    test_block.test.test_items.size = test_items_in.size;
-
-    int index = 0;
-    while(index < test_items_in.size)
-    {
-        test_block.test.test_items[index] = test_items_in[index];
-        index++;
-    }
     // Activate the task. When the task is done, the registered caller
     // (c.q. the main experiment object) will automatically be signalled.
-    test_block.enter(caller);
+    task.enter(caller);
 }

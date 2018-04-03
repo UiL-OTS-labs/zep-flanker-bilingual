@@ -46,23 +46,27 @@ import std_exit_page1;
 import std_blank_page;
 
 import texts_en;
-import test_page;
+//import test_page;
 import stimuli;
-import output;
+//import output;
 import pause_page;
 
-import practice::practice_block;
-import test::test_block;
+import test::task;
+import test::shuffle;
 
 Experiment experiment
 {
 
     on_event:entry()
     {
-        //remember, a lot of setting up is already done in session.zm::setup_session()
         show_test_windows();
         control.button_box.open();
         control.button_box.enable_all_buttons(CONTINUE);
+
+        if (test::load_stimuli() != OK)
+            terminate;
+        if (test::shuffle_items() != OK)
+            terminate;
     }
 
     on_event:exit()
@@ -100,33 +104,11 @@ Experiment experiment
         }
     }
 
-    Block main_practice
+    Part main_experiment
     {
         on_event:entry()
         {
-            load_stimuli(test_items, "prac_items.csv");
-            practice::action(this, test_items);
-        }
-    }
-
-    Block main_block
-    {
-        init()
-        {
-            num_cycles = NUMBER_OF_BLOCKS;
-        }
-
-        Part
-        {
-            on_event:entry()
-            {
-                test_page.hide_cursor();
-                // Load test items table.
-                load_stimuli(test_items, "test_items.csv");
-                if(shuffle_test_items(test_items) != OK) terminate;
-                bool pause = (main_block.num_cycles != main_block.cycle + 1);
-                test::action(this, test_items, main_block.cycle+1, pause);
-            }
+            test::action(this);
         }
     }
 
@@ -143,7 +125,6 @@ Experiment experiment
     {
         on_event:entry()
         {
-            test_page.show_cursor();
             control.end_experiment();   // Check-in session.
 
             exit_page.set_text(THANK_YOU_TEXT);

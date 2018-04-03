@@ -42,7 +42,11 @@ void test_output_append(TestOutput[] test_output, TestOutput data)
 
 
 // Writes test phase output table contents to CSV file and clears the table.
-void test_output_save_and_clear(TestOutput[] test_output, string header_line = "Results", int table_nr = 1)
+void test_output_save_and_clear(
+    TestOutput[] test_output,
+    string header_line = "Results",
+    int table_nr = 1
+    )
 {
     // Append table to CSV file (create if non-existent). The filename 
     // format is: <dbname>/<dbnum>/<expname>/ses<sesid>-<tblnum>.csv
