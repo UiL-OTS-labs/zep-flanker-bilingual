@@ -18,14 +18,14 @@ import stimuli;
 const int SHUFFLE_MAX_ATTEMPTS = 100; // max number of shuffles before failing
 
 // Shuffles test_items table (no restrictions on item order).
-int shuffle_items()
+int shuffle_items_array(TestItem[] items, int max_tries=SHUFFLE_MAX_ATTEMPTS)
 {
     int nattempts   = 0;
     bool again      = true;
 
-    while (again && nattempts < SHUFFLE_MAX_ATTEMPTS) {
-        test_items.shuffle(0, -1);
-        bool correct = check_rule_compliance();
+    while (again && nattempts < max_tries) {
+        items.shuffle(0, -1);
+        bool correct = check_rule_compliance(items);
         again = !correct;
         nattempts++;
     }
@@ -37,9 +37,25 @@ int shuffle_items()
     return again ? ERROR : OK;
 }
 
+// Shuffles the items of all TestItem tables. 
+int shuffle_items()
+{
+    int result = OK;
+    result = shuffle_items_array(prac_items);
+    if (result != OK)
+        return result;
+    result = shuffle_items_array(test_items_neutral);
+    if (result != OK)
+        return result;
+    result = shuffle_items_array(test_items_ci);
+    if (result != OK)
+        return result;
+    return result;
+}
+
 // Checks whether the test items pseudo randomization is alright.
 // Returns true, when everything is alright, false otherwise.
-bool check_rule_compliance()
+bool check_rule_compliance(TestItem[] items)
 {
     return true;
 }

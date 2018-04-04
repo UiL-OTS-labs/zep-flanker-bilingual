@@ -14,8 +14,11 @@ HISTORY:
 
 \******************************************************************************/
 
-TestItem [..] test_items;
-TestItem [..] prac_items;       // practice items
+import defs;
+
+TestItem [..] test_items_neutral;   // block with neutral items
+TestItem [..] test_items_ci;        // block with In- and Congruent items.
+TestItem [..] prac_items;           // practice items
 
 enum FlankerType
 {
@@ -28,7 +31,7 @@ enum DirectionType
 {
     LEFT,
     RIGHT,
-    NONE
+    NONE    // useful as response on trials where no response was given
 }
 
 // Item record used for the test phase item table.
@@ -59,15 +62,23 @@ int load_stimulus_file(TestItem[] target, string filename)
 int load_stimuli()
 {
     string prac = "prac_items.csv";
-    string test = "test_items.csv";
+    string test_neutral = "test_items_neutral.csv";
+    string test_ci = "test_items_ci.csv";
+
     string fn = stimuli_dir() + prac;
     if (prac_items.load(fn, true, 1) != OK) {
         print_error("Unable to load: " + fn);
         return ERROR;
     }
 
-    fn = stimuli_dir() + test;
-    if (test_items.load(fn, true, 1) != OK) {
+    fn = stimuli_dir() + test_neutral;
+    if (test_items_neutral.load(fn, true, 1) != OK) {
+        print_error("Unable to load: " + fn);
+        return ERROR;
+    }
+    
+    fn = stimuli_dir() + test_ci;
+    if (test_items_ci.load(fn, true, 1) != OK) {
         print_error("Unable to load: " + fn);
         return ERROR;
     }
