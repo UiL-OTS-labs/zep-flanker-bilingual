@@ -11,11 +11,30 @@ HISTORY:
 \******************************************************************************/
 
 import test_page;
+import std_pause_page;
 import stimuli;
 import output;
+import instructions;
 
 Block task
 {
+    Part instructions
+    {
+        on_event:entry()
+        {
+            control.button_box.enable_all_buttons(CONTINUE);
+            pause_page.set_text(PRAC_INSTRUCTION, true);
+            pause_page.action(this);
+        }
+    }
+    
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
 
     Block practice
     {
@@ -51,6 +70,24 @@ Block task
         }
     }
 
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+    
+    Part instructions_test
+    {
+        on_event:entry()
+        {
+            control.button_box.enable_all_buttons(CONTINUE);
+            pause_page.set_text(TEST_INSTRUCTION, true);
+            pause_page.action(this);
+        }
+    }
+    
     Part
     {
         on_event:entry()
@@ -125,7 +162,25 @@ Block task
             blank_page.action_auto(this, 500ms);
         }
     }
+	
+    Part instructions_pause
+    {
+        on_event:entry()
+        {
+            control.button_box.enable_all_buttons(CONTINUE);
+            pause_page.set_text(TEST_INSTRUCTION, true);
+            pause_page.action(this);
+        }
+    }
 
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+    
     Block test_2
     {
         TestItem[] selected_items;  // Reference to the proper test items
@@ -183,9 +238,8 @@ Block task
             }
         }
     }
-
-
-	Part
+    
+    Part
     {
         on_event:entry()
         {

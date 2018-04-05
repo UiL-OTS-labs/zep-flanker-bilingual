@@ -27,11 +27,6 @@ Total trial time is now set at ~2 seconds so there is a delay after the
 response that is dependent on the response, ISI, fixation_cross_duration
 If response is longer than the length duration it defaults to 0s.
 
-Randomization is according to these rules:
-No more then 3 consecutive sides (direction).
-No more then 2 consecutive flanker (congruency).
-Never two consecutive trials that have the same congruency AND side.
-
 HISTORY:
 2014-11-03 CvR   Created.
 
@@ -46,10 +41,7 @@ import std_exit_page1;
 import std_blank_page;
 
 import texts_en;
-//import test_page;
 import stimuli;
-//import output;
-import pause_page;
 
 import test::task;
 import test::shuffle;
