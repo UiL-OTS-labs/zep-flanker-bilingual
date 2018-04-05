@@ -11,11 +11,30 @@ HISTORY:
 \******************************************************************************/
 
 import test_page;
+import std_pause_page;
 import stimuli;
 import output;
+import instructions;
 
 Block task
 {
+    Part instructions
+    {
+        on_event:entry()
+        {
+            control.button_box.enable_all_buttons(CONTINUE);
+            pause_page.set_text(PRAC_INSTRUCTION, true);
+            pause_page.action(this);
+        }
+    }
+    
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
 
     Block practice
     {
@@ -58,15 +77,40 @@ Block task
             blank_page.action_auto(this, 500ms);
         }
     }
-
-    Block test
+    
+    Part instructions_test
     {
+        on_event:entry()
+        {
+            control.button_box.enable_all_buttons(CONTINUE);
+            pause_page.set_text(TEST_INSTRUCTION, true);
+            pause_page.action(this);
+        }
+    }
+    
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+
+    Block test_1
+    {
+
+        TestItem[] selected_items;
 
         on_event:entry()
         {
             test_page.hide_cursor();
 
-            num_cycles = test_items.size;
+            if (selected_group == NF)
+                selected_items = test_items_neutral;
+            else
+                selected_items = test_items_ci;
+
+            num_cycles = selected_items.size;
 
             test_page.setup();
         }
@@ -84,11 +128,11 @@ Block task
 
             on_event:entry()
             {
-                item = test_items[test.cycle];
+                item = selected_items[test_1.cycle];
                 test_page.action(this, item, now());
 
                 // debug line:
-                // println("Present: " + test_block.cycle + " " + item.id);
+                // println("Present: " + test_1_block.cycle + " " + item.id);
                 // signal(this,CONTINUE);
             }
 
@@ -96,8 +140,8 @@ Block task
             {
                 //generate and save output.
                 TestOutput output;
-//                output.block_nr = test_block.block_nr;
-                output.trial_nr = test.cycle+1;
+                output.block_nr = 1;
+                output.trial_nr = test_1.cycle+1;
                 output.id = item.id;
                 output.inter_stimulus_interval = item.isi;
                 output.congruence = item.flankers;
@@ -110,8 +154,92 @@ Block task
             }
         }
     }
+    
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+	
+    Part instructions_pause
+    {
+        on_event:entry()
+        {
+            control.button_box.enable_all_buttons(CONTINUE);
+            pause_page.set_text(TEST_INSTRUCTION, true);
+            pause_page.action(this);
+        }
+    }
 
-	Part
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+    
+    Block test_2
+    {
+        TestItem[] selected_items;  // Reference to the proper test items
+
+        on_event:entry()
+        {
+            test_page.hide_cursor();
+            
+            if (selected_group == NF)
+                selected_items = test_items_ci;
+            else
+                selected_items = test_items_neutral;
+
+            num_cycles = selected_items.size;
+
+            test_page.setup();
+        }
+
+        on_event:exit()
+        {
+            test_page.show_cursor();
+            test_page.cleanup();
+            test_output_save_and_clear(test_output);
+        }
+
+        Trial stimulus
+        {
+            TestItem item;
+
+            on_event:entry()
+            {
+                item = selected_items[test_2.cycle];
+                test_page.action(this, item, now());
+
+                // debug line:
+                // println("Present: " + test_2_block.cycle + " " + item.id);
+                // signal(this,CONTINUE);
+            }
+
+            on_event:exit()
+            {
+                //generate and save output.
+                TestOutput output;
+                output.block_nr = 2;
+                output.trial_nr = test_2.cycle+1;
+                output.id = item.id;
+                output.inter_stimulus_interval = item.isi;
+                output.congruence = item.flankers;
+                output.rt = test_page.response.rt;
+                output.selected_side = item.side;
+                output.expected_side = test_page.response.value;
+                output.correct = test_page.response.correct;
+
+                test_output_append(test_output, output);
+            }
+        }
+    }
+    
+    Part
     {
         on_event:entry()
         {

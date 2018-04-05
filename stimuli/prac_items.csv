@@ -1,7 +1,8 @@
 ### Sound Stimuli ###;;;;
-1;500;INCONGRUENT;RIGHT;congruent_r.svg
-2;500;INCONGRUENT;LEFT;incongruent_l.svg
-3;500;NEUTRAL;LEFT;neutral_l.svg
-4;500;INCONGRUENT;RIGHT;incongruent_r.svg
-5;500;INCONGRUENT;LEFT;congruent_l.svg
-6;500;NEUTRAL;RIGHT;neutral_r.svg
+id;isi;flankers;side;filename
+1;250;INCONGRUENT;RIGHT;congruent_r.svg
+2;250;INCONGRUENT;LEFT;incongruent_l.svg
+3;250;NEUTRAL;LEFT;neutral_l.svg
+4;250;INCONGRUENT;RIGHT;incongruent_r.svg
+5;250;INCONGRUENT;LEFT;congruent_l.svg
+6;250;NEUTRAL;RIGHT;neutral_r.svg

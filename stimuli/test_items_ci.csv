@@ -1,0 +1,14 @@
+### Sound Stimuli ###;;;;
+id;isi;flankers;side;filename
+1;250;INCONGRUENT;RIGHT;incongruent_r.svg
+2;250;INCONGRUENT;RIGHT;incongruent_r.svg
+3;250;INCONGRUENT;RIGHT;incongruent_r.svg
+4;250;CONGRUENT;RIGHT;congruent_r.svg
+5;250;CONGRUENT;RIGHT;congruent_r.svg
+6;250;CONGRUENT;RIGHT;congruent_r.svg
+7;250;INCONGRUENT;LEFT;incongruent_l.svg
+8;250;INCONGRUENT;LEFT;incongruent_l.svg
+9;250;INCONGRUENT;LEFT;incongruent_l.svg
+10;250;CONGRUENT;LEFT;congruent_l.svg
+11;250;CONGRUENT;LEFT;congruent_l.svg
+12;250;CONGRUENT;LEFT;congruent_l.svg

@@ -1,0 +1,30 @@
+
+// the instruction before the practice phase.
+const string PRAC_INSTRUCTION = 
+    M"<b>Dear participant</b>,\n"
+     "\n"
+     "Many thanks for participating in this experiment.\n"
+     "You are 5 symbols the symbol in the middle will always point\n"
+     "to the left or right.\n"
+     "So what you have to do is: pay attention to the symbol in\n"
+     "the middle and if it points to the left press the left button\n"
+     "And if it points to the right press the right button.\n"
+     "If you have any question don't hesitate to ask the experiment\n"
+     "leader.\n"
+     "\n"
+     "<b>Good luck</b>, press any button on the button box to continue."
+     ;
+
+// the instruction before the first block.
+const string TEST_INSTRUCTION =
+     "This was the practice part in the real part you won't get any\n"
+     "feedback. If you have any remaining question please ask.\n"
+     "<b>Good luck</b>, press any button on the button box to continue."
+     ;
+
+const string PAUSE_INSTRUCTION =
+     "You now have a small break before the last part of\n"
+     "this experiment.\n\n"
+     "Press any button to continue.\n"
+     ;
+
