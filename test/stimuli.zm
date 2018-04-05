@@ -66,22 +66,16 @@ int load_stimuli()
     string test_ci = "test_items_ci.csv";
 
     string fn = stimuli_dir() + prac;
-    if (prac_items.load(fn, true, 1) != OK) {
-        print_error("Unable to load: " + fn);
+    if (prac_items.load(fn, true, 1) != OK)
         return ERROR;
-    }
 
     fn = stimuli_dir() + test_neutral;
-    if (test_items_neutral.load(fn, true, 1) != OK) {
-        print_error("Unable to load: " + fn);
+    if (test_items_neutral.load(fn, true, 1) != OK)
         return ERROR;
-    }
     
     fn = stimuli_dir() + test_ci;
-    if (test_items_ci.load(fn, true, 1) != OK) {
-        print_error("Unable to load: " + fn);
+    if (test_items_ci.load(fn, true, 1) != OK)
         return ERROR;
-    }
 
     return OK;
 }

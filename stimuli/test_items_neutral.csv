@@ -1,0 +1,14 @@
+### Sound Stimuli ###;;;;
+id;isi;flankers;side;filename
+1;250;NEUTRAL;RIGHT;neutral_r.svg
+2;250;NEUTRAL;RIGHT;neutral_r.svg
+3;250;NEUTRAL;RIGHT;neutral_r.svg
+4;250;NEUTRAL;LEFT;neutral_l.svg
+5;250;NEUTRAL;LEFT;neutral_l.svg
+6;250;NEUTRAL;LEFT;neutral_l.svg
+7;250;NEUTRAL;RIGHT;neutral_r.svg
+8;250;NEUTRAL;RIGHT;neutral_r.svg
+9;250;NEUTRAL;RIGHT;neutral_r.svg
+10;250;NEUTRAL;LEFT;neutral_l.svg
+11;250;NEUTRAL;LEFT;neutral_l.svg
+12;250;NEUTRAL;LEFT;neutral_l.svg

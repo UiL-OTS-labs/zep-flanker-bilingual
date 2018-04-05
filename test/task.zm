@@ -67,8 +67,11 @@ Block task
         on_event:entry()
         {
             test_page.hide_cursor();
-            
-            selected_items = test_items_ci;
+
+            if (selected_group == NF)
+                selected_items = test_items_neutral;
+            else
+                selected_items = test_items_ci;
 
             num_cycles = selected_items.size;
 
@@ -130,9 +133,12 @@ Block task
         on_event:entry()
         {
             test_page.hide_cursor();
-
-            selected_items = test_items_ci;
             
+            if (selected_group == NF)
+                selected_items = test_items_ci;
+            else
+                selected_items = test_items_neutral;
+
             num_cycles = selected_items.size;
 
             test_page.setup();
