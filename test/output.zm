@@ -18,15 +18,18 @@ HISTORY:
 // each trial.
 record TestOutput
 {
-    int         block_nr;
-    int         trial_nr;       // trial number
-    int         id;             // item id
-    int         inter_stimulus_interval;
-    FlankerType congruence;
-    int         rt;
-    DirectionType selected_side;
-    DirectionType expected_side;
-    int         correct;
+    int             block_nr;
+    int             trial_nr;       // trial number
+    int             id;             // item id
+    int             rsi;            // Response Stimulus Interval
+    FlankerType     congruence;
+    int             rt;
+    int             stim_on;
+//    int             stim_off;     // Unknown when trial ends
+    int             resp_time;
+    DirectionType   selected_side;
+    DirectionType   expected_side;
+    int             correct;
 }
 
 //------------------------------------------------------------------------------
