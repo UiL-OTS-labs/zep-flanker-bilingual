@@ -24,7 +24,7 @@ enum FlankerType
 {
     CONGRUENT,
     NEUTRAL,
-    INCONGRUENT,
+    INCONGRUENT
 }
 
 enum DirectionType
