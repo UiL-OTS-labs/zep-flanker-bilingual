@@ -19,7 +19,6 @@ HISTORY:
 Page test_page
 {
     TestItem    item;           // trial control parameters
-    dur surplus_duration;           // how much time is left in trial after inter-stimulus interval and fixation cross
 
     init()
     {
@@ -69,17 +68,6 @@ Page test_page
             }
 
 
-            CrossShape fixation
-            {
-                init()
-                {
-                    radius = FIXATION_CROSS_SIZE;
-                    line_width = FIXATION_CROSS_WIDTH;
-                    line_pattern_color = color:crimson;
-                }
-            }
-
-
             ImageShape stimulus
             {
                 void setup(string image_filename)
@@ -90,30 +78,29 @@ Page test_page
                     offset_x = round(-width / 2);
                     offset_y = round(-height / 2);
                 }
+
+                on_event:finish()
+                {
+                    // The response terminates the trial.
+                    done(CONTINUE);
+                }
             }
         }
 
         time start_stimulus(time t)
         {
-            // Prepare stimulus presentation object.
-            // canvas.stimulus.text = item.word;
-
-            // Start fixation cross.
-            canvas.fixation.start(t, FIXATION_CROSS_DURATION);
-            time fixoffset = canvas.fixation.expected_finish_time;
-
             canvas.stimulus.setup(stimuli_dir() + "/images/" + item.filename);
 
-            // Start stimulus at fixation offset.
-            canvas.stimulus.start(fixoffset+BLANK_AFTER_FIXATION);
+            // Start stimulus at time t.
+            canvas.stimulus.start(t);
 
             // Return stimulus onset time.
             return canvas.stimulus.expected_start_time;
         }
 
-        void stop_stimulus()
+        void stop_stimulus(time t)
         {
-            canvas.stimulus.stop(now());
+            canvas.stimulus.stop(t);
         }
 
 
@@ -129,16 +116,18 @@ Page test_page
     Response response
     {
         // Response data.
-        DirectionType     value;          // response value: 0=no, 1=yes, -1=timeout
-        int     rt;             // response time [ms]
-        int     correct;        // correct response: 0=no, 1=yes, -1=n.a.
+        DirectionType     value;    // response value: 0=no, 1=yes, -1=timeout
+        int     rt;                 // response time [ms]
+        int     correct;            // correct response: 0=no, 1=yes, -1=n.a.
+        time    resp_time;          // time of the last response
 
 
         void clear()
         {
-            value = NONE;
-            rt = -9999;
-            correct = -1;
+            value       = NONE;
+            rt          = -9999;
+            correct     = -1;
+            resp_time   = time(0);
         }
 
 
@@ -153,20 +142,22 @@ Page test_page
                 value = val;
                 rt = int(reaction_time(0));
                 correct = val == item.side;
+                resp_time = t;
 
-                layout.stop_stimulus();  
+                layout.stop_stimulus(t);  
                 ignore_remaining_hits();
 
                 //if setup handle the feedback.
                 real correctness = 0;
-                if (num_valid_hits > 0) correctness = correct ? 1 : -1;
+                if (num_valid_hits > 0)
+                    correctness = correct ? 1 : -1;
 
-                test_page_overlay.start_feedback(this, correctness,FEEDBACK_DURATION);
-                if(surplus_duration>reaction_time(0))
-                    surplus_duration = surplus_duration - reaction_time(0);
-                else
-                    surplus_duration = 0s;
-                stop(t+surplus_duration);
+                test_page_overlay.start_feedback(
+                    this,
+                    correctness,
+                    FEEDBACK_DURATION
+                    );
+                stop();
 
             }
             else if (validity == HIT_TOO_EARLY || validity == HIT_TOO_LATE)
@@ -175,10 +166,9 @@ Page test_page
             }
         }
 
-
         on_event:finish()
         {
-                done(CONTINUE);
+            done(CONTINUE);
         }
     }
 
@@ -206,8 +196,7 @@ Page test_page
         test_page_overlay.setup(this);
 
         // Show or hide prompt.
-        test_page_overlay.show_prompt(pr ? 
-            INSTRUCTION_OVERLAY : "");
+        test_page_overlay.show_prompt(pr ? INSTRUCTION_OVERLAY : "");
 
         // Enable or disable the progress bar.
         test_page_overlay.show_progress_bar(ntrials);   // disabled if < 0
@@ -228,6 +217,7 @@ Page test_page
     void cleanup()
     {
         test_page_overlay.cleanup();
+        response.clear();
         control.button_box.disable_buttons();
         control.target = null;
     }
@@ -245,27 +235,22 @@ Page test_page
         // Reset response data.
         response.clear();
 
-
-        // Start fixation symbol and stimulus.
+        // Start stimulus.
         time stimonset = layout.start_stimulus(tref);
-
-        surplus_duration = TRIAL_DURATION - (stimonset-tref);
 
         // Response interval starts at stimulus onset. Timeout after 
         // RESPONSE_DURATION unless this duration is 0s or less.
         response.start(stimonset);
 
-
         // Update progress counter (if enabled).
         test_page_overlay.update_progress_bar(count);
 
-
         // Update status line on control window. Cleared in done() above.
         control.set_status(
-            string(item.id) + "  " + 
-            string(item.filename) + "  " +
-            string(item.isi));
-
+            string(item.id)         + "  " +
+            string(item.filename)   + "  " +
+            string(item.isi)
+            );
 
         // Remember who to signal when the trial is over.
         target = caller;
