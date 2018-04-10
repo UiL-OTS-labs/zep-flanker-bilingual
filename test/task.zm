@@ -142,13 +142,19 @@ Block task
                 TestOutput output;
                 output.block_nr = 1;
                 output.trial_nr = test_1.cycle+1;
-                output.id = item.id;
-                output.inter_stimulus_interval = item.isi;
+                output.id       = item.id;
+                output.rsi      = item.isi;
                 output.congruence = item.flankers;
-                output.rt = test_page.response.rt;
+                output.rt       = test_page.response.rt;
+                output.stim_on  =
+                    int(test_page.layout.canvas.stimulus.start_time -
+                        zero_time()
+                        );
+                output.resp_time = 
+                    int(test_page.response.resp_time - zero_time());
                 output.selected_side = item.side;
                 output.expected_side = test_page.response.value;
-                output.correct = test_page.response.correct;
+                output.correct  = test_page.response.correct;
 
                 test_output_append(test_output, output);
             }
@@ -227,9 +233,15 @@ Block task
                 output.block_nr = 2;
                 output.trial_nr = test_2.cycle+1;
                 output.id = item.id;
-                output.inter_stimulus_interval = item.isi;
+                output.rsi= item.isi;
                 output.congruence = item.flankers;
                 output.rt = test_page.response.rt;
+                output.stim_on  =
+                    int(test_page.layout.canvas.stimulus.start_time -
+                        zero_time()
+                        );
+                output.resp_time = 
+                    int(test_page.response.resp_time - zero_time());
                 output.selected_side = item.side;
                 output.expected_side = test_page.response.value;
                 output.correct = test_page.response.correct;

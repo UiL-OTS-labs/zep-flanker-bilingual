@@ -118,6 +118,7 @@ Experiment experiment
         on_event:entry()
         {
             control.end_experiment();   // Check-in session.
+            control.button_box.enable_all_buttons(CONTINUE);
 
             exit_page.set_text(THANK_YOU_TEXT);
             exit_page.action(this, 10s);
