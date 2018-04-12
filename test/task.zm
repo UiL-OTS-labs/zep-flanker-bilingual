@@ -174,7 +174,7 @@ Block task
         on_event:entry()
         {
             control.button_box.enable_all_buttons(CONTINUE);
-            pause_page.set_text(TEST_INSTRUCTION, true);
+            pause_page.set_text(PAUSE_INSTRUCTION, true);
             pause_page.action(this);
         }
     }
