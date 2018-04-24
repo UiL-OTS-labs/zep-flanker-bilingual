@@ -22,9 +22,16 @@ const string TEST_INSTRUCTION =
      "<b>Good luck</b>, press any button on the button box to continue."
      ;
 
+// Instruction to between the CI and Neutral block.
 const string PAUSE_INSTRUCTION =
      "You now have a small break before the last part of\n"
      "this experiment.\n\n"
      "Press any button to continue.\n"
      ;
+
+// Pause halfway of the CI block.
+const string CI_PAUSE_INSTRUCTION = 
+    "You have a brief pause. Press any button\n"
+    "when you are ready to continue."
+    ;
 

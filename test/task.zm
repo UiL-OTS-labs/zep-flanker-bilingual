@@ -121,6 +121,53 @@ Block task
             test_page.cleanup();
             test_output_save_and_clear(test_output);
         }
+        
+        TransientPart skip_pause
+        {
+            on_event:entry()
+            {
+                if (selected_items == test_items_ci &&
+                    test_1.cycle == test_items_ci.size / 2)
+                {
+                    pause.enter();
+                }
+                else
+                {
+                    stimulus.enter();
+                }
+
+            }
+        }
+
+        Block pause
+        {
+            Part
+            {
+                on_event:entry()
+                {
+                    blank_page.action_auto(this, 500ms);
+                }
+            }
+
+            Part
+            {
+                on_event:entry()
+                {
+                    control.button_box.enable_all_buttons(CONTINUE);
+                    pause_page.set_text(CI_PAUSE_INSTRUCTION, true);
+                    pause_page.action(this);
+                }
+            }
+            
+            Part
+            {
+                on_event:entry()
+                {
+                    test_page.setup();
+                    blank_page.action_auto(this, 500ms);
+                }
+            }
+        }
 
         Trial stimulus
         {
@@ -210,6 +257,53 @@ Block task
             test_page.show_cursor();
             test_page.cleanup();
             test_output_save_and_clear(test_output);
+        }
+
+        TransientPart skip_pause
+        {
+            on_event:entry()
+            {
+                if (selected_items == test_items_ci &&
+                    test_2.cycle == test_items_ci.size / 2)
+                {
+                    pause.enter();
+                }
+                else
+                {
+                    stimulus.enter();
+                }
+
+            }
+        }
+
+        Block pause
+        {
+            Part
+            {
+                on_event:entry()
+                {
+                    blank_page.action_auto(this, 500ms);
+                }
+            }
+
+            Part
+            {
+                on_event:entry()
+                {
+                    control.button_box.enable_all_buttons(CONTINUE);
+                    pause_page.set_text(CI_PAUSE_INSTRUCTION, true);
+                    pause_page.action(this);
+                }
+            }
+            
+            Part
+            {
+                on_event:entry()
+                {
+                    test_page.setup();
+                    blank_page.action_auto(this, 500ms);
+                }
+            }
         }
 
         Trial stimulus
